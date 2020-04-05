@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(mitya_teleop)
+project(mitya_interfaces)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -17,18 +17,11 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(mitya_interfaces REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
-add_executable(arduino_node src/arduino_node.cpp)
-#target_include_directories(arduino_node PUBLIC
-#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#  $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(arduino_node rclcpp mitya_interfaces)
-
-install(TARGETS arduino_node
-  EXPORT export_${PROJECT_NAME}
-  DESTINATION lib/${PROJECT_NAME})
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/Drive.msg"
+  "msg/LedState.msg")
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
