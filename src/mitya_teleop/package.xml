@@ -2,12 +2,17 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mitya_teleop</name>
-  <version>4.0.0</version>
-  <description>The package provides teleoperation using joysticks or keyboard.</description>
+  <version>0.0.1</version>
+  <description>Examples of minimal publisher/subscriber using rclcpp</description>
   <maintainer email="DzakhovDS@robot-mitya.ru">dmitrydzz</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+
+  <exec_depend>mitya_interfaces</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
@@ -15,6 +20,4 @@
   <export>
     <build_type>ament_cmake</build_type>
   </export>
-
-  <exec_depend>mitya_interfaces</exec_depend>
 </package>
