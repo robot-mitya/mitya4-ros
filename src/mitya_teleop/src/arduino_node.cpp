@@ -1,49 +1,18 @@
-#include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-#include "consts.h"
-#include "robo_com.h"
+#include "arduino_node.hpp"
+#include "consts.hpp"
+#include "robo_com.hpp"
 #include <termios.h>
 #include <fcntl.h>
 #include <unistd.h>
 
-using std::placeholders::_1;
-
-#define MAX_MESSAGE_SIZE 200
-#define SERIAL_BUFFER_SIZE 1000
-
-class ArduinoNode : public rclcpp::Node {
-public:
-    ArduinoNode();
-    bool openSerial();
-    void closeSerial();
-    void readSerial(void (*func)(ArduinoNode*, char*));
-    void writeSerial(char const* message);
-    void publishArduinoOutput(char *message);
-private:
-    const char *serialPortParamName = "serial_port";
-    const char *baudRateParamName = "baud_rate";
-
-    std::string serialPortName;
-    int serialBaudRate;
-    int fd;
-    bool isPortOpened{false};
-    char serialIncomingMessage[MAX_MESSAGE_SIZE];
-    int serialIncomingMessageSize;
-    char buffer[SERIAL_BUFFER_SIZE];
-    bool setInterfaceAttributes(int speed, int parity);
-    bool setBlocking(int should_block);
-    int baudRateToBaudRateConst(int baudRate);
-    void arduino_input_topic_callback(std_msgs::msg::String::SharedPtr msg);
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr arduinoInputSubscription_;
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr arduinoOutputPublisher_;
-};
+using namespace robot_mitya;
 
 ArduinoNode::ArduinoNode() : Node(RM_ARDUINO_NODE_NAME, RM_NAMESPACE) {
     this->declare_parameter<std::string>(serialPortParamName, "");
     this->declare_parameter<int>(baudRateParamName, 115200);
 
     arduinoInputSubscription_ = this->create_subscription<std_msgs::msg::String>(RM_ARDUINO_INPUT_TOPIC_NAME,
-            100, std::bind(&ArduinoNode::arduino_input_topic_callback, this, _1));
+            100, std::bind(&ArduinoNode::arduino_input_topic_callback, this, std::placeholders::_1));
     arduinoOutputPublisher_ = this->create_publisher<std_msgs::msg::String>(RM_ARDUINO_OUTPUT_TOPIC_NAME, 100);
 }
 

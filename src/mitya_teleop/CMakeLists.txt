@@ -20,18 +20,18 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(mitya_interfaces REQUIRED)
 
-add_executable(talker src/publisher_member_function.cpp)
-ament_target_dependencies(talker rclcpp std_msgs mitya_interfaces)
+#add_executable(talker src/publisher_member_function.cpp)
+#ament_target_dependencies(talker rclcpp std_msgs mitya_interfaces)
 
-add_executable(listener src/subscriber_member_function.cpp)
-ament_target_dependencies(listener rclcpp std_msgs mitya_interfaces)
+#add_executable(listener src/subscriber_member_function.cpp)
+#ament_target_dependencies(listener rclcpp std_msgs mitya_interfaces)
 
-add_executable(arduino_node src/arduino_node.cpp src/robo_com.cpp src/consts.h)
+add_executable(arduino_node src/arduino_node.cpp src/robo_com.cpp src/consts.hpp)
 ament_target_dependencies(arduino_node rclcpp std_msgs mitya_interfaces)
 
 install(TARGETS
-  talker
-  listener
+#  talker
+#  listener
   arduino_node
   DESTINATION lib/${PROJECT_NAME})
 

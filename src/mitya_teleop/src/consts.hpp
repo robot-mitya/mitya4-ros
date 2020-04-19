@@ -34,52 +34,54 @@
 #ifndef MITYA_TELEOP_SRC_CONSTS_H_
 #define MITYA_TELEOP_SRC_CONSTS_H_
 
+namespace robot_mitya {
+    #define MAX_MESSAGE_SIZE 200
+    #define COMMAND_SEPARATOR ';'
 
-#define HEAD_HORIZONTAL_SERVO_ID 1
-#define HEAD_VERTICAL_SERVO_ID 2
-#define HEAD_BROADCAST_SERVO_ID 0xFE
+    #define HEAD_HORIZONTAL_SERVO_ID 1
+    #define HEAD_VERTICAL_SERVO_ID 2
+    #define HEAD_BROADCAST_SERVO_ID 0xFE
 
-enum HerkulexTorqueState
-{
-  HTS_TORQUE_FREE = 0x00, HTS_BREAK_ON = 0x40, HTS_TORQUE_ON = 0x60
-};
+        enum HerkulexTorqueState {
+            HTS_TORQUE_FREE = 0x00, HTS_BREAK_ON = 0x40, HTS_TORQUE_ON = 0x60
+        };
 
-/**
- * ROS namespace for Robot Mitya's packages.
- * Actually namespace is defined in launch file.
- */
-#define RM_NAMESPACE ""
+    /**
+     * ROS namespace for Robot Mitya's packages.
+     * Actually namespace is defined in launch file.
+     */
+    #define RM_NAMESPACE ""
 
-/**
- * Topic name from package joy, joy_node.
- * Run "sudo apt-get install ros-kinetic-joy" to install package.
- */
-#define RM_JOY_TOPIC_NAME "joy"
+    /**
+     * Topic name from package joy, joy_node.
+     * Run "sudo apt-get install ros-kinetic-joy" to install package.
+     */
+    #define RM_JOY_TOPIC_NAME "joy"
 
-#define RM_ARDUINO_NODE_NAME "arduino_node"
-#define RM_ARDUINO_OUTPUT_TOPIC_NAME "arduino_output"
-#define RM_ARDUINO_INPUT_TOPIC_NAME "arduino_input"
+    #define RM_ARDUINO_NODE_NAME "arduino_node"
+    #define RM_ARDUINO_OUTPUT_TOPIC_NAME "arduino_output"
+    #define RM_ARDUINO_INPUT_TOPIC_NAME "arduino_input"
 
-#define RM_JOYSTICK_NODE_NAME "joystick_node"
-#define RM_DRIVE_TOPIC_NAME "drive"
+    #define RM_JOYSTICK_NODE_NAME "joystick_node"
+    #define RM_DRIVE_TOPIC_NAME "drive"
 
-#define RM_LED_TOPIC_NAME "led"
-#define RM_DISTANCE_TOPIC_NAME "distance"
-#define RM_SPEED_TOPIC_NAME "speed"
+    #define RM_LED_TOPIC_NAME "led"
+    #define RM_DISTANCE_TOPIC_NAME "distance"
+    #define RM_SPEED_TOPIC_NAME "speed"
 
-#define RM_MPU6050_NODE_NAME "mpu6050_node"
-#define RM_HEAD_IMU_OUTPUT_TOPIC_NAME "head_imu_output"
-#define RM_HEAD_IMU_INPUT_TOPIC_NAME "head_imu_input"
+    #define RM_MPU6050_NODE_NAME "mpu6050_node"
+    #define RM_HEAD_IMU_OUTPUT_TOPIC_NAME "head_imu_output"
+    #define RM_HEAD_IMU_INPUT_TOPIC_NAME "head_imu_input"
 
-#define RM_CONTROLLER_IMU_TOPIC_NAME "controller_imu"
+    #define RM_CONTROLLER_IMU_TOPIC_NAME "controller_imu"
 
-#define RM_HERKULEX_NODE_NAME "herkulex_node"
-#define RM_HEAD_POSITION_TOPIC_NAME "head_position"
-#define RM_HEAD_MOVE_TOPIC_NAME "head_move"
-#define RM_HERKULEX_OUTPUT_TOPIC_NAME "herkulex_output"
-#define RM_HERKULEX_INPUT_TOPIC_NAME "herkulex_input"
-#define RM_DRIVE_TOWARDS_TOPIC_NAME "drive_towards"
-#define RM_FACE_TOPIC_NAME "face"
-
+    #define RM_HERKULEX_NODE_NAME "herkulex_node"
+    #define RM_HEAD_POSITION_TOPIC_NAME "head_position"
+    #define RM_HEAD_MOVE_TOPIC_NAME "head_move"
+    #define RM_HERKULEX_OUTPUT_TOPIC_NAME "herkulex_output"
+    #define RM_HERKULEX_INPUT_TOPIC_NAME "herkulex_input"
+    #define RM_DRIVE_TOWARDS_TOPIC_NAME "drive_towards"
+    #define RM_FACE_TOPIC_NAME "face"
+}
 
 #endif /* MITYA_TELEOP_SRC_CONSTS_H_ */

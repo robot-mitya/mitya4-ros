@@ -31,12 +31,12 @@
  *      Author: Dmitry Dzakhov
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "robo_com.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include "robo_com.hpp"
 
-//#include "ros/ros.h"
+using namespace robot_mitya;
 
 char RoboCom::driveLeftMessage_[MAX_MESSAGE_SIZE];
 char RoboCom::driveRightMessage_[MAX_MESSAGE_SIZE];
