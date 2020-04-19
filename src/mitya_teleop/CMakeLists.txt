@@ -26,7 +26,7 @@ ament_target_dependencies(talker rclcpp std_msgs mitya_interfaces)
 add_executable(listener src/subscriber_member_function.cpp)
 ament_target_dependencies(listener rclcpp std_msgs mitya_interfaces)
 
-add_executable(arduino_node src/arduino_node.cpp src/consts.h)
+add_executable(arduino_node src/arduino_node.cpp src/robo_com.cpp src/consts.h)
 ament_target_dependencies(arduino_node rclcpp std_msgs mitya_interfaces)
 
 install(TARGETS

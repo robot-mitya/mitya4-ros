@@ -45,7 +45,7 @@ enum HerkulexTorqueState
 };
 
 /**
- * ROS namespace for Robot Mitay's packages.
+ * ROS namespace for Robot Mitya's packages.
  * Actually namespace is defined in launch file.
  */
 #define RM_NAMESPACE ""
