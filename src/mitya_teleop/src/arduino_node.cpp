@@ -14,6 +14,9 @@ ArduinoNode::ArduinoNode() : Node(RM_ARDUINO_NODE_NAME, RM_NAMESPACE) {
     arduinoInputSubscription_ = this->create_subscription<std_msgs::msg::String>(RM_ARDUINO_INPUT_TOPIC_NAME,
             100, std::bind(&ArduinoNode::arduino_input_topic_callback, this, std::placeholders::_1));
     arduinoOutputPublisher_ = this->create_publisher<std_msgs::msg::String>(RM_ARDUINO_OUTPUT_TOPIC_NAME, 100);
+    ledStatePublisher_ = this->create_publisher<mitya_interfaces::msg::LedState>(RM_LED_TOPIC_NAME, 50);
+    distancePublisher_ = this->create_publisher<std_msgs::msg::Float32>(RM_DISTANCE_TOPIC_NAME, 100);
+    speedPublisher_ = this->create_publisher<std_msgs::msg::Float32>(RM_SPEED_TOPIC_NAME, 100);
 }
 
 bool ArduinoNode::setInterfaceAttributes(int speed, int parity)
@@ -237,9 +240,28 @@ void ArduinoNode::publishArduinoOutput(char *message)
     arduinoOutputPublisher_->publish(msg);
 }
 
+void ArduinoNode::publishLED(uint8_t ledId, int ledState)
+{
+    ledStateRosMessage_.id = ledId;
+    ledStateRosMessage_.state = (uint8_t) ledState;
+    ledStatePublisher_->publish(ledStateRosMessage_);
+}
+
+void ArduinoNode::publishDistance(float distance)
+{
+    distanceRosMessage_.data = distance;
+    distancePublisher_->publish(distanceRosMessage_);
+}
+
+void ArduinoNode::publishSpeed(float speed)
+{
+    speedRosMessage_.data = speed;
+    speedPublisher_->publish(speedRosMessage_);
+}
+
 void onReceiveSerialMessage(ArduinoNode *arduinoNode, char *message)
 {
-    RCLCPP_DEBUG(arduinoNode->get_logger(), "I heard: '%s'", message);
+    RCLCPP_DEBUG(arduinoNode->get_logger(), "Received from Arduino: '%s'", message);
     Command command;
     int param1, param2, param3;
     RoboCom::parseMessage(message, command, param1, param2, param3);
@@ -254,15 +276,13 @@ void onReceiveSerialMessage(ArduinoNode *arduinoNode, char *message)
         }
         case CMD_L1_RESPONSE:
         {
-            //TODO #1
-//            arduinoNode->publishLED(1, param1);
+            arduinoNode->publishLED(1, param1);
             arduinoNode->publishArduinoOutput(message);
             break;
         }
         case CMD_L2_RESPONSE:
         {
-            //TODO #1
-//            arduinoNode->publishLED(2, param1);
+            arduinoNode->publishLED(2, param1);
             arduinoNode->publishArduinoOutput(message);
             break;
         }
@@ -271,16 +291,14 @@ void onReceiveSerialMessage(ArduinoNode *arduinoNode, char *message)
             float meters = (float) param2;
             meters /= 1000;
             meters += (float) param1;
-            //TODO #1
-//            arduinoNode->publishDistance(meters);
+            arduinoNode->publishDistance(meters);
             break;
         }
         case CMD_SPD_RESPONSE:
         {
             float kilometersPerHour = (float) param1;
             kilometersPerHour /= 1000;
-            //TODO #1
-//            arduinoNode->publishSpeed(kilometersPerHour);
+            arduinoNode->publishSpeed(kilometersPerHour);
             break;
         }
         default:
