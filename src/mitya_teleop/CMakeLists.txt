@@ -29,11 +29,13 @@ find_package(mitya_interfaces REQUIRED)
 add_executable(arduino_node src/arduino_node.cpp src/robo_com.cpp src/consts.hpp)
 ament_target_dependencies(arduino_node rclcpp std_msgs mitya_interfaces)
 
+add_executable(joystick_node src/joystick_node.cpp src/consts.hpp src/button_event.cpp)
+ament_target_dependencies(joystick_node rclcpp std_msgs mitya_interfaces)
+
 install(TARGETS
-#  talker
-#  listener
-  arduino_node
-  DESTINATION lib/${PROJECT_NAME})
+        arduino_node
+        joystick_node
+        DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
