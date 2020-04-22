@@ -18,6 +18,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(mitya_interfaces REQUIRED)
 
 #add_executable(talker src/publisher_member_function.cpp)
@@ -30,7 +31,7 @@ add_executable(arduino_node src/arduino_node.cpp src/robo_com.cpp src/consts.hpp
 ament_target_dependencies(arduino_node rclcpp std_msgs mitya_interfaces)
 
 add_executable(joystick_node src/joystick_node.cpp src/consts.hpp src/button_event.cpp)
-ament_target_dependencies(joystick_node rclcpp std_msgs mitya_interfaces)
+ament_target_dependencies(joystick_node rclcpp std_msgs sensor_msgs mitya_interfaces)
 
 install(TARGETS
         arduino_node

@@ -7,7 +7,7 @@
 
 #include <rclcpp/node.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <math.h>
+#include <cmath>
 #include <sensor_msgs/msg/joy.hpp>
 #include "mitya_interfaces/msg/drive.hpp"
 #include "mitya_interfaces/msg/head_move.hpp"
@@ -98,14 +98,14 @@ namespace robot_mitya {
         ButtonEvent *headMoveCenterButton_;
         void headMoveCenterButtonHandler(bool state);
 
-//        ros::Subscriber joystickSubscriber_;
+        rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joystickSubscription_;
 //        ros::Publisher drivePublisher_;
 //        ros::Publisher headPositionPublisher_;
 //        ros::Publisher headMovePublisher_;
 //        ros::Publisher arduinoInputPublisher_;
 //        ros::Publisher herkulexInputPublisher_;
 //        ros::Publisher facePublisher_;
-        void joystickCallback(const sensor_msgs::msg::Joy::ConstSharedPtr& joy);
+        void joy_topic_callback(sensor_msgs::msg::Joy::SharedPtr msg);
         int8_t getSpeedValue(float joystickValue);
         void publishDriveMessage(float x, float y, float boost);
         void publishHeadPositionMessage(float x, float y);
