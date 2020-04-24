@@ -9,10 +9,12 @@
 #include <rclcpp/rclcpp.hpp>
 #include <cmath>
 #include <sensor_msgs/msg/joy.hpp>
+#include <std_msgs/msg/string.hpp>
 #include "mitya_interfaces/msg/drive.hpp"
 #include "mitya_interfaces/msg/head_move.hpp"
 #include "mitya_interfaces/msg/head_position.hpp"
 #include "button_event.hpp"
+#include "consts.hpp"
 
 namespace robot_mitya {
 
@@ -99,14 +101,14 @@ namespace robot_mitya {
         void headMoveCenterButtonHandler(bool state);
 
         rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joystickSubscription_;
-//        ros::Publisher drivePublisher_;
-//        ros::Publisher headPositionPublisher_;
-//        ros::Publisher headMovePublisher_;
-//        ros::Publisher arduinoInputPublisher_;
-//        ros::Publisher herkulexInputPublisher_;
-//        ros::Publisher facePublisher_;
+        rclcpp::Publisher<mitya_interfaces::msg::Drive>::SharedPtr drivePublisher_;
+        rclcpp::Publisher<mitya_interfaces::msg::HeadPosition>::SharedPtr headPositionPublisher_;
+        rclcpp::Publisher<mitya_interfaces::msg::HeadMove>::SharedPtr headMovePublisher_;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr arduinoInputPublisher_;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr herkulexInputPublisher_;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr facePublisher_;
         void joy_topic_callback(sensor_msgs::msg::Joy::SharedPtr msg);
-        int8_t getSpeedValue(float joystickValue);
+        int8_t getSpeedValue(float joystickValue) const;
         void publishDriveMessage(float x, float y, float boost);
         void publishHeadPositionMessage(float x, float y);
         void publishSwitchLed1Message();
@@ -114,7 +116,7 @@ namespace robot_mitya {
         void publishSwingTailMessage();
         void publishFaceMessage(const char* command);
         void publishCenterHerkulex(uint8_t address);
-//        void publishModeHerkulex(HerkulexTorqueState mode);
+        void publishModeHerkulex(HerkulexTorqueState mode);
         void publishRebootHerkulex();
         void publishRebootArduino();
 

@@ -4,6 +4,8 @@
 
 #include "joystick_node.hpp"
 #include "consts.hpp"
+#include "robo_com.hpp"
+#include <yaml-cpp/yaml.h>
 
 using namespace robot_mitya;
 
@@ -40,11 +42,6 @@ JoystickNode::JoystickNode() : Node(RM_JOYSTICK_NODE_NAME, RM_NAMESPACE) {
     blueButtonIndex_ = this->declare_parameter<int>("blue_button", 2); // Blue face or LED1(+ALT) by default
     yellowButtonIndex_ = this->declare_parameter<int>("yellow_button", 3); // Ill or LED2(+ALT) by default
     altButtonIndex_ = this->declare_parameter<int>("alt_button", 5); // XBOX RB by default
-
-    RCLCPP_INFO(this->get_logger(), "greenButtonIndex_: %d", greenButtonIndex_);
-    RCLCPP_INFO(this->get_logger(), "redButtonIndex_: %d", redButtonIndex_);
-    RCLCPP_INFO(this->get_logger(), "blueButtonIndex_: %d", blueButtonIndex_);
-    RCLCPP_INFO(this->get_logger(), "yellowButtonIndex_: %d", yellowButtonIndex_);
 
     headHorizontalMinDegree = this->declare_parameter<float>("head_horizontal_min_degree", -120.0f);
     headHorizontalCenterDegree = this->declare_parameter<float>("head_horizontal_center_degree", 0.0f);
@@ -88,147 +85,150 @@ JoystickNode::JoystickNode() : Node(RM_JOYSTICK_NODE_NAME, RM_NAMESPACE) {
 
     joystickSubscription_ = this->create_subscription<sensor_msgs::msg::Joy>(RM_JOY_TOPIC_NAME, 10,
             std::bind(&JoystickNode::joy_topic_callback, this, std::placeholders::_1));
+
+    drivePublisher_ = this->create_publisher<mitya_interfaces::msg::Drive>(RM_DRIVE_TOPIC_NAME, 100);
+    headPositionPublisher_ = this->create_publisher<mitya_interfaces::msg::HeadPosition>(RM_HEAD_POSITION_TOPIC_NAME, 100);
+    headMovePublisher_ = this->create_publisher<mitya_interfaces::msg::HeadMove>(RM_HEAD_MOVE_TOPIC_NAME, 100);
+    arduinoInputPublisher_ = this->create_publisher<std_msgs::msg::String>(RM_ARDUINO_INPUT_TOPIC_NAME, 100);
+    herkulexInputPublisher_ = this->create_publisher<std_msgs::msg::String>(RM_HERKULEX_INPUT_TOPIC_NAME, 100);
+    facePublisher_ = this->create_publisher<std_msgs::msg::String>(RM_FACE_TOPIC_NAME, 100);
 }
 
 void JoystickNode::rebootButtonHandler(bool state)
 {
-//    if (!state) return;
-//    publishRebootHerkulex();
-//    publishRebootArduino();
+    if (!state) return;
+    publishRebootHerkulex();
+    publishRebootArduino();
 }
 
 void JoystickNode::greenButtonHandler(bool state)
 {
-    RCLCPP_INFO(this->get_logger(), "greenButtonHandler: %s", (state ? "ON" : "OFF"));
-//    if (!state) return;
-//    if (altButtonState_)
-//        publishSwingTailMessage();
-//    else
-//    {
-//        if (faceType_ != HAPPY)
-//        {
-//            publishFaceMessage(RoboCom::getFaceHappyCommand());
-//            faceType_ = HAPPY;
-//        }
-//        else
-//        {
-//            publishFaceMessage(RoboCom::getFaceOkCommand());
-//            faceType_ = OK;
-//        }
-//    }
+    if (!state) return;
+    if (altButtonState_)
+        publishSwingTailMessage();
+    else
+    {
+        if (faceType_ != HAPPY)
+        {
+            publishFaceMessage(RoboCom::getFaceHappyCommand());
+            faceType_ = HAPPY;
+        }
+        else
+        {
+            publishFaceMessage(RoboCom::getFaceOkCommand());
+            faceType_ = OK;
+        }
+    }
 }
 
 void JoystickNode::redButtonHandler(bool state)
 {
-    RCLCPP_INFO(this->get_logger(), "redButtonHandler: %s", (state ? "ON" : "OFF"));
-//    if (!state) return;
-//    if (!altButtonState_)
-//    {
-//        if (faceType_ != ANGRY)
-//        {
-//            publishFaceMessage(RoboCom::getFaceAngryCommand());
-//            faceType_ = ANGRY;
-//        }
-//        else
-//        {
-//            publishFaceMessage(RoboCom::getFaceOkCommand());
-//            faceType_ = OK;
-//        }
-//    }
+    if (!state) return;
+    if (!altButtonState_)
+    {
+        if (faceType_ != ANGRY)
+        {
+            publishFaceMessage(RoboCom::getFaceAngryCommand());
+            faceType_ = ANGRY;
+        }
+        else
+        {
+            publishFaceMessage(RoboCom::getFaceOkCommand());
+            faceType_ = OK;
+        }
+    }
 }
 
 void JoystickNode::blueButtonHandler(bool state)
 {
-    RCLCPP_INFO(this->get_logger(), "blueButtonHandler: %s", (state ? "ON" : "OFF"));
-//    if (!state) return;
-//    if (altButtonState_)
-//        publishSwitchLed1Message();
-//    else
-//    {
-//        if (faceType_ != BLUE)
-//        {
-//            publishFaceMessage(RoboCom::getFaceBlueCommand());
-//            faceType_ = BLUE;
-//        }
-//        else
-//        {
-//            publishFaceMessage(RoboCom::getFaceOkCommand());
-//            faceType_ = OK;
-//        }
-//    }
+    if (!state) return;
+    if (altButtonState_)
+        publishSwitchLed1Message();
+    else
+    {
+        if (faceType_ != BLUE)
+        {
+            publishFaceMessage(RoboCom::getFaceBlueCommand());
+            faceType_ = BLUE;
+        }
+        else
+        {
+            publishFaceMessage(RoboCom::getFaceOkCommand());
+            faceType_ = OK;
+        }
+    }
 }
 
 void JoystickNode::yellowButtonHandler(bool state)
 {
-    RCLCPP_INFO(this->get_logger(), "yellowButtonHandler: %s", (state ? "ON" : "OFF"));
-//    if (!state) return;
-//    if (altButtonState_)
-//        publishSwitchLed2Message();
-//    else
-//    {
-//        if (faceType_ != ILL)
-//        {
-//            publishFaceMessage(RoboCom::getFaceIllCommand());
-//            faceType_ = ILL;
-//        }
-//        else
-//        {
-//            publishFaceMessage(RoboCom::getFaceOkCommand());
-//            faceType_ = OK;
-//        }
-//    }
+    if (!state) return;
+    if (altButtonState_)
+        publishSwitchLed2Message();
+    else
+    {
+        if (faceType_ != ILL)
+        {
+            publishFaceMessage(RoboCom::getFaceIllCommand());
+            faceType_ = ILL;
+        }
+        else
+        {
+            publishFaceMessage(RoboCom::getFaceOkCommand());
+            faceType_ = OK;
+        }
+    }
 }
 
 void JoystickNode::altButtonHandler(bool state)
 {
-//    altButtonState_ = state;
+    altButtonState_ = state;
 }
 
 void JoystickNode::headModeButtonHandler(bool state)
 {
-//    if (!state) return;
-//    if (headControlMode_ == HEAD_MOVE)
-//        headControlMode_ = HEAD_POSITION;
-//    else if (headControlMode_ == HEAD_POSITION)
-//        headControlMode_ = HEAD_MOVE;
+    if (!state) return;
+    if (headControlMode_ == HEAD_MOVE)
+        headControlMode_ = HEAD_POSITION;
+    else if (headControlMode_ == HEAD_POSITION)
+        headControlMode_ = HEAD_MOVE;
 }
 
 void JoystickNode::headMoveLeftButtonHandler(bool state)
 {
-//    headMoveMessage_.horizontal = state ? 1 : 0;
-//    if (headInvertHorizontal)
-//        headMoveMessage_.horizontal = -headMoveMessage_.horizontal;
-//    headMovePublisher_.publish(headMoveMessage_);
+    headMoveMessage_.horizontal = state ? 1 : 0;
+    if (headInvertHorizontal)
+        headMoveMessage_.horizontal = -headMoveMessage_.horizontal;
+    headMovePublisher_->publish(headMoveMessage_);
 }
 
 void JoystickNode::headMoveRightButtonHandler(bool state)
 {
-//    headMoveMessage_.horizontal = state ? -1 : 0;
-//    if (headInvertHorizontal)
-//        headMoveMessage_.horizontal = -headMoveMessage_.horizontal;
-//    headMovePublisher_.publish(headMoveMessage_);
+    headMoveMessage_.horizontal = state ? -1 : 0;
+    if (headInvertHorizontal)
+        headMoveMessage_.horizontal = -headMoveMessage_.horizontal;
+    headMovePublisher_->publish(headMoveMessage_);
 }
 
 void JoystickNode::headMoveUpButtonHandler(bool state)
 {
-//    headMoveMessage_.vertical = state ? 1 : 0;
-//    if (headInvertVertical)
-//        headMoveMessage_.vertical = -headMoveMessage_.vertical;
-//    headMovePublisher_.publish(headMoveMessage_);
+    headMoveMessage_.vertical = state ? 1 : 0;
+    if (headInvertVertical)
+        headMoveMessage_.vertical = -headMoveMessage_.vertical;
+    headMovePublisher_->publish(headMoveMessage_);
 }
 
 void JoystickNode::headMoveDownButtonHandler(bool state)
 {
-//    headMoveMessage_.vertical = state ? -1 : 0;
-//    if (headInvertVertical)
-//        headMoveMessage_.vertical = -headMoveMessage_.vertical;
-//    headMovePublisher_.publish(headMoveMessage_);
+    headMoveMessage_.vertical = state ? -1 : 0;
+    if (headInvertVertical)
+        headMoveMessage_.vertical = -headMoveMessage_.vertical;
+    headMovePublisher_->publish(headMoveMessage_);
 }
 
 void JoystickNode::headMoveCenterButtonHandler(bool state)
 {
-//    if (!state) return;
-//    publishCenterHerkulex(HEAD_BROADCAST_SERVO_ID);
+    if (!state) return;
+    publishCenterHerkulex(HEAD_BROADCAST_SERVO_ID);
 }
 
 void JoystickNode::joy_topic_callback(const sensor_msgs::msg::Joy::SharedPtr joy) {
@@ -268,15 +268,186 @@ void JoystickNode::joy_topic_callback(const sensor_msgs::msg::Joy::SharedPtr joy
     }
 }
 
+int8_t JoystickNode::getSpeedValue(float joystickValue) const
+{
+    auto result = (int8_t) roundf(joystickValue * (float) driveMaxValue);
+    if (result < -driveMaxValue) return -driveMaxValue;
+    else if (result > driveMaxValue) return driveMaxValue;
+    return result;
+}
+
 void JoystickNode::publishDriveMessage(float x, float y, float boost) {
+    x *= driveSignX;
+    y *= driveSignY;
+
+    float alpha = atan2f(y, x) * RAD_TO_DEG;
+    if (alpha < 0) alpha += 360;
+    if (alpha < 0) alpha += 360;
+    else if (alpha >= 360) alpha -= 360;
+
+    float radius = sqrtf(x * x + y * y);
+    if (radius < 0) radius = 0.0f;
+    else if (radius > 1) radius = 1.0f;
+
+    float left = 0;
+    float right = 0;
+    if (alpha >= 0 && alpha < 90)
+    {
+        left = 1.0f;
+        right = 2.0f / 90.0f * alpha - 1.0f;
+    }
+    else if (alpha >= 90 && alpha < 180)
+    {
+        left = -2.0f / 90.0f * alpha + 3.0f;
+        right = 1.0f;
+    }
+    else if (alpha >= 180 && alpha < 270)
+    {
+        left = -1.0f;
+        right = - 2.0f / 90.0f * alpha + 5.0f;
+    }
+    else
+    {
+        left = 2.0f / 90.0f * alpha - 7.0f;
+        right = -1.0f;
+    }
+    left *= radius;
+    right *= radius;
+
+    // Calculating boost_factor according to the <boost> argument:
+    // <boost> value is in interval [+1..-1].
+    // When <boost> is +1 - the trigger is released and boost_factor should be equal to driveBoostMinFactor_.
+    // When <boost> is -1 - the trigger is fully pressed and boost_factor should be equal to driveBoostMaxFactor_.
+    float boost_factor = driveBoostMinFactor_ + (driveBoostMaxFactor_ - driveBoostMinFactor_) * (boost - 1.0f) / (-2.0f);
+    left *= boost_factor;
+    right *= boost_factor;
+
+    //ROS_INFO("x=%+5.3f y=%+5.3f R=%+5.3f A=%+8.3f    Left=%+6.3f Right=%+6.3f", x, y, radius, alpha, left, right);
+    //ROS_INFO("Left=%+6.3f  Right=%+6.3f  Boost=%+6.3f  BoostFactor=%+6.3f", left, right, boost, boost_factor);
+
+    driveMessage_.left = getSpeedValue(left);
+    driveMessage_.right = getSpeedValue(right);
+    drivePublisher_->publish(driveMessage_);
 }
 
 void JoystickNode::publishHeadPositionMessage(float x, float y) {
+    x *= headHorizontalAmplitude;
+    x += headHorizontalCenterDegree;
+    if (x < headHorizontalMinDegree) x = headHorizontalMinDegree;
+    else if (x > headHorizontalMaxDegree) x = headHorizontalMaxDegree;
+    headPositionMessage_.horizontal = x;
+
+    y *= headVerticalAmplitude;
+    y += headVerticalCenterDegree;
+    if (y < headVerticalMinDegree) y = headVerticalMinDegree;
+    else if (y > headVerticalMaxDegree) y = headVerticalMaxDegree;
+    headPositionMessage_.vertical = y;
+
+    headPositionPublisher_->publish(headPositionMessage_);
+}
+
+void JoystickNode::publishSwitchLed1Message()
+{
+    std_msgs::msg::String msg;
+    msg.data = RoboCom::getSwitchLed1Command();
+    arduinoInputPublisher_->publish(msg);
+}
+
+void JoystickNode::publishSwitchLed2Message()
+{
+    std_msgs::msg::String msg;
+    msg.data = RoboCom::getSwitchLed2Command();
+    arduinoInputPublisher_->publish(msg);
+}
+
+void JoystickNode::publishSwingTailMessage()
+{
+    std_msgs::msg::String msg;
+    msg.data = RoboCom::getSwingTailCommand();
+    arduinoInputPublisher_->publish(msg);
+}
+
+void JoystickNode::publishFaceMessage(const char* command)
+{
+    std_msgs::msg::String msg;
+    msg.data = command;
+    facePublisher_->publish(msg);
+}
+
+void JoystickNode::publishCenterHerkulex(uint8_t address)
+{
+    YAML::Emitter out;
+    out << YAML::BeginMap;
+    out << YAML::Key << "n";
+    out << YAML::Value << "center";
+    out << YAML::Key << "a";
+    out << YAML::Value << (int) address;
+    out << YAML::EndMap;
+
+    std_msgs::msg::String stringMessage;
+    stringMessage.data = out.c_str();
+    herkulexInputPublisher_->publish(stringMessage);
+}
+
+void JoystickNode::publishModeHerkulex(HerkulexTorqueState mode)
+{
+    YAML::Emitter out;
+    out << YAML::BeginMap;
+    out << YAML::Key << "n";
+    out << YAML::Value << "mode";
+    out << YAML::Key << "m";
+    out << YAML::Value << (int) mode;
+    out << YAML::EndMap;
+
+    std_msgs::msg::String stringMessage;
+    stringMessage.data = out.c_str();
+    herkulexInputPublisher_->publish(stringMessage);
+}
+
+void JoystickNode::publishRebootHerkulex()
+{
+    YAML::Emitter out;
+    out << YAML::BeginMap;
+    out << YAML::Key << "n";
+    out << YAML::Value << "reboot";
+    out << YAML::Key << "a";
+    out << YAML::Value << (int) HEAD_BROADCAST_SERVO_ID;
+    out << YAML::EndMap;
+
+    std_msgs::msg::String stringMessage;
+    stringMessage.data = out.c_str();
+    herkulexInputPublisher_->publish(stringMessage);
+}
+
+void JoystickNode::publishRebootArduino()
+{
+    std_msgs::msg::String msg;
+    msg.data = RoboCom::getRebootCommand();
+    arduinoInputPublisher_->publish(msg);
+}
+
+void JoystickNode::sendStopHead()
+{
+    publishModeHerkulex(HTS_TORQUE_FREE);
+}
+
+std::shared_ptr<JoystickNode> pNode = nullptr;
+
+// Calls on shutting down the node.
+void sigintHandler(int sig) {
+    if (pNode != nullptr) {
+        RCLCPP_INFO(pNode->get_logger(), "Shutting down %s (signal=%d)", RM_JOYSTICK_NODE_NAME, sig);
+        pNode->sendStopHead();
+    }
+    rclcpp::shutdown();
 }
 
 int main(int argc, char **argv) {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<JoystickNode>());
-    rclcpp::shutdown();
+    pNode = std::make_shared<JoystickNode>();
+    signal(SIGINT, sigintHandler);
+    rclcpp::spin(pNode);
+//    rclcpp::spin(std::make_shared<JoystickNode>());
+//    rclcpp::shutdown();
     return 0;
 }
