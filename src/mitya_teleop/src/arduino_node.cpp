@@ -222,7 +222,7 @@ void ArduinoNode::readSerial(void (*func)(ArduinoNode*, char*))
     }
 }
 
-void ArduinoNode::writeSerial(char const* message)
+void ArduinoNode::writeSerial(char const* message) const
 {
     write(fd, message, strlen(message));
 }
@@ -288,7 +288,7 @@ void onReceiveSerialMessage(ArduinoNode *arduinoNode, char *message)
         }
         case CMD_DIST_RESPONSE:
         {
-            float meters = (float) param2;
+            auto meters = (float) param2;
             meters /= 1000;
             meters += (float) param1;
             arduinoNode->publishDistance(meters);
@@ -296,7 +296,7 @@ void onReceiveSerialMessage(ArduinoNode *arduinoNode, char *message)
         }
         case CMD_SPD_RESPONSE:
         {
-            float kilometersPerHour = (float) param1;
+            auto kilometersPerHour = (float) param1;
             kilometersPerHour /= 1000;
             arduinoNode->publishSpeed(kilometersPerHour);
             break;

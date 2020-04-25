@@ -22,7 +22,7 @@ namespace robot_mitya {
         bool openSerial();
         void closeSerial();
         void readSerial(void (*func)(ArduinoNode*, char*));
-        void writeSerial(char const* message);
+        void writeSerial(char const* message) const;
         void publishArduinoOutput(char *message);
         void publishLED(uint8_t ledId, int ledState);
         void publishDistance(float distance);
