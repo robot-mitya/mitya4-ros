@@ -46,8 +46,10 @@ namespace robot_mitya {
         bool setInterfaceAttributes(int speed, int parity);
         bool setBlocking(int should_block);
         int baudRateToBaudRateConst(int baudRate);
-        void arduino_input_topic_callback(std_msgs::msg::String::SharedPtr msg);
+        void arduino_input_topic_callback(std_msgs::msg::String::SharedPtr msg) const;
+        void drive_topic_callback(mitya_interfaces::msg::Drive::SharedPtr msg) const;
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr arduinoInputSubscription_;
+        rclcpp::Subscription<mitya_interfaces::msg::Drive>::SharedPtr driveSubscription_;
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr arduinoOutputPublisher_;
         rclcpp::Publisher<mitya_interfaces::msg::LedState>::SharedPtr ledStatePublisher_;
         rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr distancePublisher_;

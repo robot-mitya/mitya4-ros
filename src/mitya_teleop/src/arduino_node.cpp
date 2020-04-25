@@ -13,6 +13,8 @@ ArduinoNode::ArduinoNode() : Node(RM_ARDUINO_NODE_NAME, RM_NAMESPACE) {
 
     arduinoInputSubscription_ = this->create_subscription<std_msgs::msg::String>(RM_ARDUINO_INPUT_TOPIC_NAME,
             100, std::bind(&ArduinoNode::arduino_input_topic_callback, this, std::placeholders::_1));
+    driveSubscription_ = this->create_subscription<mitya_interfaces::msg::Drive>(RM_DRIVE_TOPIC_NAME,
+            100, std::bind(&ArduinoNode::drive_topic_callback, this, std::placeholders::_1));
     arduinoOutputPublisher_ = this->create_publisher<std_msgs::msg::String>(RM_ARDUINO_OUTPUT_TOPIC_NAME, 100);
     ledStatePublisher_ = this->create_publisher<mitya_interfaces::msg::LedState>(RM_LED_TOPIC_NAME, 50);
     distancePublisher_ = this->create_publisher<std_msgs::msg::Float32>(RM_DISTANCE_TOPIC_NAME, 100);
@@ -227,10 +229,16 @@ void ArduinoNode::writeSerial(char const* message) const
     write(fd, message, strlen(message));
 }
 
-void ArduinoNode::arduino_input_topic_callback(const std_msgs::msg::String::SharedPtr msg)
+void ArduinoNode::arduino_input_topic_callback(const std_msgs::msg::String::SharedPtr msg) const
 {
     RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->data.c_str());
     this->writeSerial(msg->data.c_str());
+}
+
+void ArduinoNode::drive_topic_callback(const mitya_interfaces::msg::Drive::SharedPtr msg) const
+{
+    this->writeSerial(RoboCom::getDriveLeftCommand((signed char) (msg->left)));
+    this->writeSerial(RoboCom::getDriveRightCommand((signed char) (msg->right)));
 }
 
 void ArduinoNode::publishArduinoOutput(char *message)
