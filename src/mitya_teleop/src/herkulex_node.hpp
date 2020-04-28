@@ -7,12 +7,15 @@
 
 #include <rclcpp/node.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <std_msgs/msg/string.hpp>
+#include "mitya_interfaces/msg/head_position.hpp"
+#include "mitya_interfaces/msg/head_move.hpp"
 
 namespace robot_mitya {
     class HerkulexNode : public rclcpp::Node {
     public:
-//        std::string serialPortName;
-//        int serialBaudRate;
+        std::string serialPortName;
+        int serialBaudRate;
 
         HerkulexNode();
 //        void updateCenterHeadState();
@@ -40,22 +43,22 @@ namespace robot_mitya {
 //        tf2::Quaternion targetQuaternion_;
 //
 //        int targetModeVelocity_;
-//
-//        // Topic RM_HERKULEX_INPUT_TOPIC_NAME ('herkulex_input') subscriber:
-//        ros::Subscriber herkulexInputSubscriber_;
-//        void herkulexInputCallback(const std_msgs::StringConstPtr& msg);
-//
-//        // Topic RM_HERKULEX_OUTPUT_TOPIC_NAME ('herkulex_output') publisher:
-//        ros::Publisher herkulexOutputPublisher_;
-//
-//        // Topic RM_HEAD_POSITION_TOPIC_NAME ('head_position') subscriber:
-//        ros::Subscriber headPositionSubscriber_;
-//        void headPositionCallback(const mitya_teleop::HeadPosition::ConstPtr& msg);
-//
-//        // Topic RM_HEAD_MOVE_TOPIC_NAME ('head_move') subscriber:
-//        ros::Subscriber headMoveSubscriber_;
-//        void headMoveCallback(const mitya_teleop::HeadMove::ConstPtr& msg);
-//
+
+        // Topic RM_HERKULEX_INPUT_TOPIC_NAME ('herkulex_input') subscriber:
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr herkulexInputSubscription_;
+        void herkulex_input_topic_callback(std_msgs::msg::String::SharedPtr msg) const;
+
+        // Topic RM_HERKULEX_OUTPUT_TOPIC_NAME ('herkulex_output') publisher:
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr herkulexOutputPublisher_;
+
+        // Topic RM_HEAD_POSITION_TOPIC_NAME ('head_position') subscriber:
+        rclcpp::Subscription<mitya_interfaces::msg::HeadPosition>::SharedPtr headPositionSubscription_;
+        void head_position_topic_callback(mitya_interfaces::msg::HeadPosition::SharedPtr msg) const;
+
+        // Topic RM_HEAD_MOVE_TOPIC_NAME ('head_move') subscriber:
+        rclcpp::Subscription<mitya_interfaces::msg::HeadMove>::SharedPtr headMoveSubscription_;
+        void head_move_topic_callback(mitya_interfaces::msg::HeadMove::SharedPtr msg) const;
+
 //        // Topic RM_HEAD_IMU_INPUT_TOPIC_NAME ('head_imu_input') publisher:
 //        ros::Publisher headImuInputPublisher_;
 //        // Topic RM_HEAD_IMU_OUTPUT_TOPIC_NAME ('herkulex_output') subscriber:
@@ -69,10 +72,10 @@ namespace robot_mitya {
 //        // Topic RM_DRIVE_TOWARDS_TOPIC_NAME ('drive_towards') subscriber:
 //        ros::Subscriber driveTowardsSubscriber_;
 //        void driveTowardsCallback(const std_msgs::Int8ConstPtr& msg);
-//
-//        // Topic RM_ARDUINO_INPUT_TOPIC_NAME ('arduino_input') publisher:
-//        ros::Publisher arduinoInputPublisher_;
-//
+
+        // Topic RM_ARDUINO_INPUT_TOPIC_NAME ('arduino_input') publisher:
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr arduinoInputPublisher_;
+
 //        void publishDriveCommands(int leftMotorVelocity, int rightMotorVelocity);
 //
 //        struct HeadMoveValues
@@ -96,9 +99,9 @@ namespace robot_mitya {
 //        void centerHeadImu(double millis);
 //        ros::Time centerHeadImuStartTime_;
 //        bool centerHeadImuStarted_;
-//
-//        float factor1_;
-//        float factor2_;
+
+        float factor1_;
+        float factor2_;
 //        static constexpr tf2Scalar POINTING_DEFAULT = 1000.0f;
     };
 }
