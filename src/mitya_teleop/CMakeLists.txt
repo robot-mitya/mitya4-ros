@@ -35,7 +35,7 @@ add_executable(joystick_node src/joystick_node.cpp src/robo_com.cpp src/consts.h
 ament_target_dependencies(joystick_node rclcpp std_msgs sensor_msgs mitya_interfaces yaml-cpp)
 target_link_libraries(joystick_node yaml-cpp)
 
-add_executable(herkulex_node src/herkulex_node.cpp src/robo_com.cpp src/consts.hpp)
+add_executable(herkulex_node src/herkulex_node.cpp src/herkulex.cpp src/robo_com.cpp src/consts.hpp)
 ament_target_dependencies(herkulex_node rclcpp std_msgs sensor_msgs mitya_interfaces yaml-cpp)
 target_link_libraries(herkulex_node yaml-cpp)
 
