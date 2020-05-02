@@ -332,6 +332,7 @@ int main(int argc, char * argv[]) {
     } else {
         std::cout << "NOT OPENED" << std::endl;
     }
+
     rclcpp::shutdown();
     return 0;
 }

@@ -78,83 +78,108 @@ static uint8_t H_ERROR_EEPREG_DISTORT = 0x40;
 // HERKULEX Broadcast Servo ID
 static uint8_t BROADCAST_ID = 0xFE;
 
-enum TorqueState
-{
-  TS_TORQUE_FREE = 0x00, TS_BREAK_ON = 0x40, TS_TORQUE_ON = 0x60
+enum TorqueState {
+    TS_TORQUE_FREE = 0x00, TS_BREAK_ON = 0x40, TS_TORQUE_ON = 0x60
 };
 
-class HerkulexClass
-{
+class HerkulexClass {
 public:
-  HerkulexClass();
-  ~HerkulexClass();
+    HerkulexClass() noexcept;
 
-  bool begin(char const* portName, long baud);
-  void end();
+    ~HerkulexClass();
 
-  void initialize();
-  uint8_t stat(int servoID, uint8_t *statusError, uint8_t *statusDetail);
-  void ACK(int valueACK);
-  uint8_t model();
-  void set_ID(int ID_Old, int ID_New);
-  void clearError(int servoID);
+    bool begin(char const *portName, int baud);
 
-  void torqueState(int servoID, TorqueState state);
-  void setTorqueFree(int servoID);
-  void setBreakOn(int servoID);
-  void setTorqueOn(int servoID);
+    void end();
 
-  void moveAll(int servoID, int Goal, int iLed);
-  void moveSpeedAll(int servoID, int Goal, int iLed);
-  void moveAllAngle(int servoID, float angle, int iLed);
-  void actionAll(int pTime);
+    void initialize();
 
-  void moveSpeedOne(int servoID, int Goal, int pTime, int iLed);
-  void moveOne(int servoID, int Goal, int pTime, int iLed);
-  void moveOneAngle(int servoID, float angle, int pTime, int iLed);
+    uint8_t stat(int servoID, uint8_t *statusError, uint8_t *statusDetail);
 
-  int getPosition(int servoID);
-  float getAngle(int servoID);
-  int getSpeed(int servoID);
+    void ACK(int valueACK);
 
-  void reboot(int servoID);
-  void setLed(int servoID, int valueLed);
+    uint8_t model();
 
-  void writeRegistryRAM(int servoID, int address, int writeByte);
-  void writeRegistryEEP(int servoID, int address, int writeByte);
+    void set_ID(int ID_Old, int ID_New);
+
+    void clearError(int servoID);
+
+    void torqueState(int servoID, TorqueState state);
+
+    void setTorqueFree(int servoID);
+
+    void setBreakOn(int servoID);
+
+    void setTorqueOn(int servoID);
+
+    void moveAll(int servoID, int Goal, int iLed);
+
+    void moveSpeedAll(int servoID, int Goal, int iLed);
+
+    void moveAllAngle(int servoID, float angle, int iLed);
+
+    void actionAll(int pTime);
+
+    void moveSpeedOne(int servoID, int Goal, int pTime, int iLed);
+
+    void moveOne(int servoID, int Goal, int pTime, int iLed);
+
+    void moveOneAngle(int servoID, float angle, int pTime, int iLed);
+
+    int getPosition(int servoID);
+
+    float getAngle(int servoID);
+
+    int getSpeed(int servoID);
+
+    void reboot(int servoID);
+
+    void setLed(int servoID, int valueLed);
+
+    void writeRegistryRAM(int servoID, int address, int writeByte);
+
+    void writeRegistryEEP(int servoID, int address, int writeByte);
 
 // private area
 private:
-  void sendData(uint8_t* buffer, int length);
-  bool readData(int size);
-  void addData(int GoalLSB, int GoalMSB, int set, int servoID);
-  int checksum1(uint8_t* data, int lengthString);
-  int checksum2(int XOR);
-  void delay(long millis);
+    void sendData(uint8_t *buffer, int length);
 
-  int pSize;
-  int pID;
-  int cmd;
-  int lengthString;
-  int ck1;
-  int ck2;
+    bool readData(int size);
 
-  int conta;
+    void addData(int GoalLSB, int GoalMSB, int set, int servoID);
 
-  int XOR;
-  int playTime;
+    int checksum1(uint8_t *data, int lengthString);
 
-  uint8_t data[DATA_SIZE];
-  uint8_t dataEx[DATA_MOVE_ALL];
-  uint8_t moveData[DATA_MOVE];
+    int checksum2(int XOR);
 
-  int fd;
-  bool isPortOpened;
-  bool setInterfaceAttribs(int fd, int speed, int parity);
-  bool setBlocking(int fd, int should_block);
-  int baudRateToBaudRateConst(int baudRate);
+    void delay(long millis);
+
+    int pSize;
+    int pID;
+    int cmd;
+    int lengthString;
+    int ck1;
+    int ck2;
+
+    int conta;
+
+    int XOR;
+    int playTime;
+
+    uint8_t data[DATA_SIZE];
+    uint8_t dataEx[DATA_MOVE_ALL];
+    uint8_t moveData[DATA_MOVE];
+
+    int fd;
+    bool isPortOpened;
+
+    bool setInterfaceAttribs(int fd, int speed, int parity);
+
+    bool setBlocking(int fd, int should_block);
+
+    int baudRateToBaudRateConst(int baudRate);
 };
 
-extern HerkulexClass Herkulex;
+//extern HerkulexClass Herkulex;
 
 #endif /* MITYA_TELEOP_SRC_HERKULEX_H_ */
