@@ -39,7 +39,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define DATA_SIZE        30             // buffer for input data
+#define DATA_SIZE        30             // buffer for input data_
 #define DATA_MOVE        50             // max 10 servos <---- change this for more servos!
 #define DATA_MOVE_ALL    58
 #define TIME_OUT     5          //timeout serial communication
@@ -142,42 +142,42 @@ public:
 
 // private area
 private:
-    void sendData(uint8_t *buffer, int length);
+    void sendData(uint8_t *buffer, int length) const;
 
     bool readData(int size);
 
     void addData(int GoalLSB, int GoalMSB, int set, int servoID);
 
-    int checksum1(uint8_t *data, int lengthString);
+    int checksum1(const uint8_t *data, int lengthString);
 
-    int checksum2(int XOR);
+    static int checksum2(int XOR);
 
-    void delay(long millis);
+    static void delay(long millis);
 
-    int pSize;
-    int pID;
-    int cmd;
-    int lengthString;
-    int ck1;
-    int ck2;
+    int pSize_;
+    int pID_;
+    int cmd_;
+    int lengthString_;
+    int ck1_;
+    int ck2_;
 
-    int conta;
+    int conta_;
 
-    int XOR;
-    int playTime;
+    int XOR_;
+    int playTime_;
 
-    uint8_t data[DATA_SIZE];
-    uint8_t dataEx[DATA_MOVE_ALL];
-    uint8_t moveData[DATA_MOVE];
+    uint8_t data_[DATA_SIZE]{};
+    uint8_t dataEx_[DATA_MOVE_ALL]{};
+    uint8_t moveData_[DATA_MOVE]{};
 
-    int fd;
-    bool isPortOpened;
+    int fd_;
+    bool isPortOpened_;
 
-    bool setInterfaceAttribs(int fd, int speed, int parity);
+    static bool setInterfaceAttribs(int fd, int speed, int parity);
 
-    bool setBlocking(int fd, int should_block);
+    static bool setBlocking(int fd, int should_block);
 
-    int baudRateToBaudRateConst(int baudRate);
+    static int baudRateToBaudRateConst(int baudRate);
 };
 
 //extern HerkulexClass Herkulex;

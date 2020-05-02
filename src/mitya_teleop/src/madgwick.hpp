@@ -52,7 +52,7 @@ public:
   void center();
 
   /**
-   * Update current orientation according to gyroscope and accelerometer data.
+   * Update current orientation according to gyroscope and accelerometer data_.
    */
   void update(float deltaTime,
               float gx, float gy, float gz,
