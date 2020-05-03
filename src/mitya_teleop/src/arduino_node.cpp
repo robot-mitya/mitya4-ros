@@ -85,6 +85,7 @@ bool ArduinoNode::setBlocking(int should_block)
 
 bool ArduinoNode::openSerial()
 {
+    return true;
 //    rclcpp::Parameter serialPortParam;
 //    if (this->get_parameter(serialPortParamName, serialPortParam)) {
 //        serialPortName = serialPortParam.as_string();
@@ -223,7 +224,7 @@ void ArduinoNode::readSerial(void (*func)(ArduinoNode*, char*))
 
 void ArduinoNode::writeSerial(char const* message) const
 {
-    RCLCPP_DEBUG(get_logger(), "writeSerial: %s", message);
+    RCLCPP_INFO(get_logger(), "writeSerial: %s", message);
 //    write(fd, message, strlen(message));
 }
 
@@ -328,7 +329,7 @@ int main(int argc, char * argv[]) {
         }
         node->closeSerial();
     } else {
-        std::cout << "NOT OPENED" << std::endl;
+        RCLCPP_ERROR(node->get_logger(), "Serial port is not opened");
     }
 
     rclcpp::shutdown();
