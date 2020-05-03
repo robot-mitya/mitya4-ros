@@ -85,53 +85,50 @@ bool ArduinoNode::setBlocking(int should_block)
 
 bool ArduinoNode::openSerial()
 {
-//    serialPortName = "/dev/ttyACM0";
-//    serialBaudRate = 115200;
+//    rclcpp::Parameter serialPortParam;
+//    if (this->get_parameter(serialPortParamName, serialPortParam)) {
+//        serialPortName = serialPortParam.as_string();
+//        RCLCPP_INFO(this->get_logger(), "%s param value: %s", serialPortParamName, serialPortName.c_str());
+//    } else {
+//        RCLCPP_ERROR(this->get_logger(), "%s param not found", serialPortParamName);
+//        return false;
+//    }
 //
-    rclcpp::Parameter serialPortParam;
-    if (this->get_parameter(serialPortParamName, serialPortParam)) {
-        serialPortName = serialPortParam.as_string();
-        RCLCPP_INFO(this->get_logger(), "%s param value: %s", serialPortParamName, serialPortName.c_str());
-    } else {
-        RCLCPP_ERROR(this->get_logger(), "%s param not found", serialPortParamName);
-        return false;        
-    }
-
-    rclcpp::Parameter baudRateParam;
-    if (this->get_parameter(baudRateParamName, baudRateParam)) {
-        serialBaudRate = baudRateParam.as_int();
-        RCLCPP_INFO(this->get_logger(), "%s param value: %d", baudRateParamName, serialBaudRate);
-    } else {
-        RCLCPP_ERROR(this->get_logger(), "%s param not found", baudRateParamName);
-        return false;
-    }
-
-    closeSerial();
-    fd = open(serialPortName.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
-    if (fd < 0)
-    {
-        RCLCPP_ERROR(this->get_logger(), "Error %d opening %s: %s", errno, serialPortName.c_str(), strerror(errno));
-        return false;
-    }
-    isPortOpened = true;
-
-    if (!setInterfaceAttributes(baudRateToBaudRateConst(serialBaudRate), 0)) // set speed bps, 8n1 (no parity)
-        return false;
-    if (!setBlocking(0)) // set no blocking
-        return false;
-
-    RCLCPP_INFO(this->get_logger(), "Serial port %s is opened at %d baud rate", serialPortName.c_str(), serialBaudRate);
-    return true;
+//    rclcpp::Parameter baudRateParam;
+//    if (this->get_parameter(baudRateParamName, baudRateParam)) {
+//        serialBaudRate = baudRateParam.as_int();
+//        RCLCPP_INFO(this->get_logger(), "%s param value: %d", baudRateParamName, serialBaudRate);
+//    } else {
+//        RCLCPP_ERROR(this->get_logger(), "%s param not found", baudRateParamName);
+//        return false;
+//    }
+//
+//    closeSerial();
+//    fd = open(serialPortName.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
+//    if (fd < 0)
+//    {
+//        RCLCPP_ERROR(this->get_logger(), "Error %d opening %s: %s", errno, serialPortName.c_str(), strerror(errno));
+//        return false;
+//    }
+//    isPortOpened = true;
+//
+//    if (!setInterfaceAttributes(baudRateToBaudRateConst(serialBaudRate), 0)) // set speed bps, 8n1 (no parity)
+//        return false;
+//    if (!setBlocking(0)) // set no blocking
+//        return false;
+//
+//    RCLCPP_INFO(this->get_logger(), "Serial port %s is opened at %d baud rate", serialPortName.c_str(), serialBaudRate);
+//    return true;
 }
 
 void ArduinoNode::closeSerial()
 {
-    if (isPortOpened)
-    {
-        close(fd);
-        isPortOpened = false;
-        RCLCPP_INFO(this->get_logger(), "Serial port is closed");
-    }
+//    if (isPortOpened)
+//    {
+//        close(fd);
+//        isPortOpened = false;
+//        RCLCPP_INFO(this->get_logger(), "Serial port is closed");
+//    }
 }
 
 int ArduinoNode::baudRateToBaudRateConst(int baudRate)
@@ -207,26 +204,27 @@ int ArduinoNode::baudRateToBaudRateConst(int baudRate)
 
 void ArduinoNode::readSerial(void (*func)(ArduinoNode*, char*))
 {
-    int n = read(fd, buffer, SERIAL_BUFFER_SIZE);
-    char ch;
-    for (int i = 0; i < n; i++)
-    {
-        ch = buffer[i];
-        if (ch < 32) continue;
-        serialIncomingMessage[serialIncomingMessageSize++] = ch;
-        if (ch == COMMAND_SEPARATOR)
-        {
-            serialIncomingMessage[serialIncomingMessageSize] = '\0';
-            func(this, serialIncomingMessage);
-            serialIncomingMessageSize = 0;
-            serialIncomingMessage[serialIncomingMessageSize] = '\0';
-        }
-    }
+//    int n = read(fd, buffer, SERIAL_BUFFER_SIZE);
+//    char ch;
+//    for (int i = 0; i < n; i++)
+//    {
+//        ch = buffer[i];
+//        if (ch < 32) continue;
+//        serialIncomingMessage[serialIncomingMessageSize++] = ch;
+//        if (ch == COMMAND_SEPARATOR)
+//        {
+//            serialIncomingMessage[serialIncomingMessageSize] = '\0';
+//            func(this, serialIncomingMessage);
+//            serialIncomingMessageSize = 0;
+//            serialIncomingMessage[serialIncomingMessageSize] = '\0';
+//        }
+//    }
 }
 
 void ArduinoNode::writeSerial(char const* message) const
 {
-    write(fd, message, strlen(message));
+    RCLCPP_DEBUG(get_logger(), "writeSerial: %s", message);
+//    write(fd, message, strlen(message));
 }
 
 void ArduinoNode::arduino_input_topic_callback(const std_msgs::msg::String::SharedPtr msg) const
